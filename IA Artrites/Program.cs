@@ -395,7 +395,8 @@ internal class Program
         Console.WriteLine(linhaCaso);
 
         Console.WriteLine("\n\nCasos similares:");
-        //teste commit
+        
+        casos = casos.OrderBy(c => c.Similaridade).ToList();
 
         // Adicionando novo Caso
         Console.WriteLine("\nVai querer adicionar esses novo caso no banco de dados?");
