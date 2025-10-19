@@ -381,9 +381,12 @@ internal class Program
 
         Console.WriteLine("\nNovo Caso:");
         PropertyInfo[] propriedadesCaso = typeof(Caso).GetProperties();
-        string linhaCaso = string.Join(" | ", Array.ConvertAll(propriedadesCaso, p => $"{p.Name}:{p.GetValue(novoCaso)}"));
+        string linhaCaso = string.Join(" | ",
+            propriedadesCaso
+                .Where(p => p.Name != "Similaridade")
+                .Select(p => $"{p.Name}:{p.GetValue(novoCaso)}"));
         Console.WriteLine(linhaCaso);
-
+        
         Console.WriteLine("\nCasos similares:");
         for (int i = 0; i < casos.Count; i++)
         {
