@@ -425,6 +425,16 @@ internal class Program
                  novoCaso.Diagnostico.ToString()
             });
 
+            // Garante quebra de linha no final do arquivo antes de adicionar o novo caso
+            if (File.Exists(caminhoArquivo))
+            {
+                var conteudo = File.ReadAllText(caminhoArquivo);
+                if (!conteudo.EndsWith(Environment.NewLine))
+                {
+                    File.AppendAllText(caminhoArquivo, Environment.NewLine);
+                }
+            }
+
             // Adiciona a linha ao arquivo (sem apagar o conteúdo anterior)
             File.AppendAllText(caminhoArquivo, linhaNovoCaso + Environment.NewLine);
 
