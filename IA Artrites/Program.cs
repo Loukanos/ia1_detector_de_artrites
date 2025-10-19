@@ -148,6 +148,16 @@ internal class Program
         };
     }
 
+    // Função auxiliar para converter bool -> float
+    static float BoolToFloat(bool valor) => valor ? 1f : 0f;
+    static float Similaridade(float v1, float v2)
+    {
+        float diff = Math.Abs(v1 - v2);
+        float sim = 1f - diff; // 1 = iguais, 0 = máxima diferença
+        if (sim < 0f) sim = 0f;
+        return sim;
+    }
+
     public static void Main(string[] args)
     {
         var casos = new List<Caso>();
@@ -285,14 +295,13 @@ internal class Program
         // Algoritmo da Vizinhança
         float atributo = 0;
         float somaAtributos = 0;
-        int valor1 = 0;
-        int valor2 = 0;
         float resultado = 0;
         float somaPesos = pesos.DTS + pesos.DJ + pesos.DC + pesos.ER + pesos.IL +
                               pesos.Mob + pesos.RC + pesos.RM + pesos.NR + pesos.TCSE +
                               pesos.ART + pesos.BUR + pesos.TOF + pesos.SIN + pesos.ATG +
                               pesos.HLAB27 + pesos.DL;
 
+        // Garantindo valor 1 para a soma dos pesos
         if (somaPesos > 0)
         {
             pesos.DTS /= somaPesos;
@@ -317,95 +326,48 @@ internal class Program
         
         for (int i = 0; i < casos.Count; i++)
         {
-            atributo = 0;
             somaAtributos = 0;
-            valor1 = 0;
-            valor2 = 0;
             resultado = 0;
 
-            Console.WriteLine($"Caso {i}: Id = {casos[i].Id}");
+            // DL
+            somaAtributos += pesos.DL * Similaridade(BoolToFloat(novoCaso.DL), BoolToFloat(casos[i].DL));
+            // RC
+            somaAtributos += pesos.RC * Similaridade(BoolToFloat(novoCaso.RC), BoolToFloat(casos[i].RC));
+            // DC
+            somaAtributos += pesos.DC * Similaridade(BoolToFloat(novoCaso.DC), BoolToFloat(casos[i].DC));
+            // Mobilidade (0=normal, 1=limitado)
+            somaAtributos += pesos.Mob * Similaridade((int)novoCaso.Mob, (int)casos[i].Mob);
+            // DTS
+            somaAtributos += pesos.DTS * Similaridade(BoolToFloat(novoCaso.DTS), BoolToFloat(casos[i].DTS));
+            // IL (escala 0 a 1)
+            somaAtributos += pesos.IL * Similaridade(ValorEnumIL(novoCaso.IL), ValorEnumIL(casos[i].IL));
+            // ER
+            somaAtributos += pesos.ER * Similaridade(ValorEnumER(novoCaso.ER), ValorEnumER(casos[i].ER));
+            // TCSE
+            somaAtributos += pesos.TCSE * Similaridade(ValorEnumTC(novoCaso.TCSE), ValorEnumTC(casos[i].TCSE));
+            // ART
+            somaAtributos += pesos.ART * Similaridade(BoolToFloat(novoCaso.ART), BoolToFloat(casos[i].ART));
+            // RM
+            somaAtributos += pesos.RM * Similaridade(BoolToFloat(novoCaso.RM), BoolToFloat(casos[i].RM));
+            // BUR
+            somaAtributos += pesos.BUR * Similaridade(BoolToFloat(novoCaso.BUR), BoolToFloat(casos[i].BUR));
+            // TOF
+            somaAtributos += pesos.TOF * Similaridade(BoolToFloat(novoCaso.TOF), BoolToFloat(casos[i].TOF));
+            // SIN
+            somaAtributos += pesos.SIN * Similaridade(BoolToFloat(novoCaso.SIN), BoolToFloat(casos[i].SIN));
+            // ATG
+            somaAtributos += pesos.ATG * Similaridade(BoolToFloat(novoCaso.ATG), BoolToFloat(casos[i].ATG));
+            // NR (escala contínua — pode ajustar se NR não for de 0 a 1)
+            somaAtributos += pesos.NR * Similaridade(novoCaso.NR, casos[i].NR);
+            // HLAB27
+            somaAtributos += pesos.HLAB27 * Similaridade(BoolToFloat(novoCaso.HLAB27), BoolToFloat(casos[i].HLAB27));
+            // DJ
+            somaAtributos += pesos.DJ * Similaridade(BoolToFloat(novoCaso.DJ), BoolToFloat(casos[i].DJ));
 
-            valor1 = Convert.ToInt32(novoCaso.DL);
-            valor2 = Convert.ToInt32(casos[i].DL);
-            atributo = pesos.DL * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.RC);
-            valor2 = Convert.ToInt32(casos[i].RC);
-            atributo = pesos.RC * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.DC);
-            valor2 = Convert.ToInt32(casos[i].DC);
-            atributo = pesos.DC * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.Mob);
-            valor2 = Convert.ToInt32(casos[i].Mob);
-            atributo = pesos.Mob * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.DTS);
-            valor2 = Convert.ToInt32(casos[i].DTS);
-            atributo = pesos.DTS * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            atributo = pesos.IL * ((1 - (ValorEnumIL(novoCaso.IL) - ValorEnumIL(casos[i].IL))) / (1 - 0));
-            somaAtributos += atributo;
-
-            atributo = pesos.ER * ((1 - (ValorEnumER(novoCaso.ER) - ValorEnumER(casos[i].ER))) / (1 - 0));
-            somaAtributos += atributo;
-
-            atributo = pesos.TCSE * ((1 - (ValorEnumTC(novoCaso.TCSE) - ValorEnumTC(casos[i].TCSE))) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.ART);
-            valor2 = Convert.ToInt32(casos[i].ART);
-            atributo = pesos.ART * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.RM);
-            valor2 = Convert.ToInt32(casos[i].RM);
-            atributo = pesos.RM * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.BUR);
-            valor2 = Convert.ToInt32(casos[i].BUR);
-            atributo = pesos.BUR * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.TOF);
-            valor2 = Convert.ToInt32(casos[i].TOF);
-            atributo = pesos.TOF * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.SIN);
-            valor2 = Convert.ToInt32(casos[i].SIN);
-            atributo = pesos.SIN * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.ATG);
-            valor2 = Convert.ToInt32(casos[i].ATG);
-            atributo = pesos.ATG * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            atributo = pesos.NR * ((1 - (novoCaso.NR - casos[i].NR)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.HLAB27);
-            valor2 = Convert.ToInt32(casos[i].HLAB27);
-            atributo = pesos.HLAB27 * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            valor1 = Convert.ToInt32(novoCaso.DJ);
-            valor2 = Convert.ToInt32(casos[i].DJ);
-            atributo = pesos.DJ * ((1 - (valor1 - valor2)) / (1 - 0));
-            somaAtributos += atributo;
-
-            resultado = (somaAtributos / somaPesos) * 100;
+            // Resultado final (em %)
+            resultado = somaAtributos * 100f;
             casos[i].Similaridade = resultado;
         }
-
 
         // Mostrar Resultado
         casos = casos.OrderByDescending(c => c.Similaridade).ToList();
