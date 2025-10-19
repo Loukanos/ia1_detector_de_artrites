@@ -395,6 +395,7 @@ internal class Program
         Console.WriteLine(linhaCaso);
 
         Console.WriteLine("\n\nCasos similares:");
+        //teste commit
 
         // Adicionando novo Caso
         Console.WriteLine("\nVai querer adicionar esses novo caso no banco de dados?");
