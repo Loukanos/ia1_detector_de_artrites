@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|c:\\users\\leo_a\\downloads\\ia artrites\\ia artrites\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|solutionrelative:ia artrites\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|c:\\users\\leo_a\\downloads\\ia artrites\\ia artrites\\caso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|solutionrelative:ia artrites\\caso.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|c:\\users\\leo_a\\downloads\\ia artrites\\ia artrites\\pesos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|solutionrelative:ia artrites\\pesos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|c:\\users\\leo_a\\downloads\\ia artrites\\ia artrites\\casosartrites.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{102FB7D4-2E8B-4D44-A8FB-3F1FEA3BA823}|IA Artrites\\IA Artrites.csproj|solutionrelative:ia artrites\\casosartrites.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\Program.cs",
+              "RelativeDocumentMoniker": "IA Artrites\\Program.cs",
+              "ToolTip": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\Program.cs",
+              "RelativeToolTip": "IA Artrites\\Program.cs",
+              "ViewState": "AQIAAHABAAAAAAAAAAAqwI8BAABBAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-19T16:42:17.577Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CasosArtrites.txt",
+              "DocumentMoniker": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\CasosArtrites.txt",
+              "RelativeDocumentMoniker": "IA Artrites\\CasosArtrites.txt",
+              "ToolTip": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\CasosArtrites.txt",
+              "RelativeToolTip": "IA Artrites\\CasosArtrites.txt",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAIwDEAAABnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-10-19T16:21:57.3Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Pesos.cs",
+              "DocumentMoniker": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\Pesos.cs",
+              "RelativeDocumentMoniker": "IA Artrites\\Pesos.cs",
+              "ToolTip": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\Pesos.cs",
+              "RelativeToolTip": "IA Artrites\\Pesos.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-19T19:07:36.912Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Caso.cs",
+              "DocumentMoniker": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\Caso.cs",
+              "RelativeDocumentMoniker": "IA Artrites\\Caso.cs",
+              "ToolTip": "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\Caso.cs",
+              "RelativeToolTip": "IA Artrites\\Caso.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAADwvx0AAAA+AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-19T14:57:03.622Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
