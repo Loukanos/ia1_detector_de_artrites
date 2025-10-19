@@ -151,13 +151,15 @@ internal class Program
     public static void Main(string[] args)
     {
         var casos = new List<Caso>();
-        string caminhoArquivo = "C:\\Users\\leo_a\\Downloads\\IA Artrites\\IA Artrites\\CasosArtrites.txt";
+        string caminhoArquivo = "C:\\Users\\leo_a\\Downloads\\Ia Trab M2\\IA Artrites\\CasosArtrites.txt";
+        int id = 0;
 
         if (File.Exists(caminhoArquivo))
         {
             foreach (var linha in File.ReadLines(caminhoArquivo))
             {
                 var campos = linha.Split(';');
+                id++;
 
                 float nrValue;
                 if (!float.TryParse(campos[16].Trim(), NumberStyles.Float, new CultureInfo("pt-BR"), out nrValue))
@@ -291,7 +293,30 @@ internal class Program
                               pesos.ART + pesos.BUR + pesos.TOF + pesos.SIN + pesos.ATG +
                               pesos.HLAB27 + pesos.DL;
 
-        for (int i = 0; i < casos.Count; i++) {
+        if (somaPesos > 0)
+        {
+            pesos.DTS /= somaPesos;
+            pesos.DJ /= somaPesos;
+            pesos.DC /= somaPesos;
+            pesos.ER /= somaPesos;
+            pesos.IL /= somaPesos;
+            pesos.Mob /= somaPesos;
+            pesos.RC /= somaPesos;
+            pesos.RM /= somaPesos;
+            pesos.NR /= somaPesos;
+            pesos.TCSE /= somaPesos;
+            pesos.ART /= somaPesos;
+            pesos.BUR /= somaPesos;
+            pesos.TOF /= somaPesos;
+            pesos.SIN /= somaPesos;
+            pesos.ATG /= somaPesos;
+            pesos.HLAB27 /= somaPesos;
+            pesos.DL /= somaPesos;
+        }
+
+        
+        for (int i = 0; i < casos.Count; i++)
+        {
             atributo = 0;
             somaAtributos = 0;
             valor1 = 0;
@@ -325,13 +350,13 @@ internal class Program
             atributo = pesos.DTS * ((1 - (valor1 - valor2)) / (1 - 0));
             somaAtributos += atributo;
 
-            atributo = pesos.IL * ((1-(ValorEnumIL(novoCaso.IL) - ValorEnumIL(casos[i].IL))) / (1 - 0));
+            atributo = pesos.IL * ((1 - (ValorEnumIL(novoCaso.IL) - ValorEnumIL(casos[i].IL))) / (1 - 0));
             somaAtributos += atributo;
 
-            atributo = pesos.ER * ((1-(ValorEnumER(novoCaso.ER) - ValorEnumER(casos[i].ER))) / (1 - 0));
+            atributo = pesos.ER * ((1 - (ValorEnumER(novoCaso.ER) - ValorEnumER(casos[i].ER))) / (1 - 0));
             somaAtributos += atributo;
 
-            atributo = pesos.TCSE * ((1-(ValorEnumTC(novoCaso.TCSE) - ValorEnumTC(casos[i].TCSE))) / (1 - 0));
+            atributo = pesos.TCSE * ((1 - (ValorEnumTC(novoCaso.TCSE) - ValorEnumTC(casos[i].TCSE))) / (1 - 0));
             somaAtributos += atributo;
 
             valor1 = Convert.ToInt32(novoCaso.ART);
@@ -383,6 +408,9 @@ internal class Program
 
 
         // Mostrar Resultado
+        casos = casos.OrderByDescending(c => c.Similaridade).ToList();
+        novoCaso.Diagnostico = casos[0].Diagnostico;
+
         Console.WriteLine("\n\n   Resultado do Diagnóstico\n");
         Console.WriteLine("Pesos dos Casos:");
         PropertyInfo[] propriedades = typeof(IA_Artrites.Pesos).GetProperties();
@@ -395,14 +423,56 @@ internal class Program
         Console.WriteLine(linhaCaso);
 
         Console.WriteLine("\nCasos similares:");
-        casos = casos.OrderBy(c => c.Similaridade).ToList();
+        for (int i = 0; i < casos.Count; i++)
+        {
+            PropertyInfo[] propriedadesCasos = typeof(Caso).GetProperties();
+            string linhaCasos = string.Join(" | ", Array.ConvertAll(propriedadesCasos, p => $"{p.Name}:{p.GetValue(casos[i])}"));
+            Console.WriteLine(linhaCasos);
+        }
 
+        
         // Adicionando novo Caso
-        Console.WriteLine("\nVai querer adicionar esses novo caso no banco de dados?");
-        casos.Add(novoCaso);
+        Console.WriteLine("\nVai querer adicionar esses novo caso no banco de dados? (s/n):");
+        string salvarInput = Console.ReadLine()?.Trim().ToLower();
+        if (salvarInput == "s")
+        {
+            // Define o ID automaticamente (último + 1)
+            novoCaso.Id = id + 1;
+            casos.Add(novoCaso);
 
-        Console.WriteLine("Novo caso adicionado com sucesso!");
+            // Monta a linha com os valores do novo caso
+            string linhaNovoCaso = string.Join(";", new string[] {
+                 novoCaso.Id.ToString(),
+                 (novoCaso.DL ? "sim" : "nao"),
+                 (novoCaso.RC ? "sim" : "nao"),
+                 (novoCaso.DC ? "sim" : "nao"),
+                 novoCaso.Mob.ToString(),
+                 (novoCaso.DTS ? "sim" : "nao"),
+                 novoCaso.IL.ToString(),
+                 novoCaso.ER.ToString(),
+                 novoCaso.TCSE.ToString(),
+                 (novoCaso.ART ? "sim" : "nao"),
+                 (novoCaso.RM ? "sim" : "nao"),
+                 (novoCaso.BUR ? "sim" : "nao"),
+                 (novoCaso.TOF ? "sim" : "nao"),
+                 (novoCaso.SIN ? "sim" : "nao"),
+                 (novoCaso.ATG ? "sim" : "nao"),
+                 novoCaso.NR.ToString("0.##", new CultureInfo("pt-BR")),
+                 (novoCaso.HLAB27 ? "sim" : "nao"),
+                 (novoCaso.DJ ? "sim" : "nao"),
+                 novoCaso.Diagnostico.ToString()
+            });
 
+            // Adiciona a linha ao arquivo (sem apagar o conteúdo anterior)
+            File.AppendAllText(caminhoArquivo, linhaNovoCaso + Environment.NewLine);
+
+            Console.WriteLine("\nNovo caso adicionado com sucesso ao arquivo!");
+        }
+        else
+        {
+            Console.WriteLine("\nNovo caso não foi adicionado.");
+        }
+        
 
 
     }
