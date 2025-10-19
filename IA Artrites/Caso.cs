@@ -27,5 +27,5 @@ public class Caso
     public bool HLAB27 { get; set; } // HLA-B27
     public bool DJ { get; set; } // Deformação nas Juntas
     public Diagnostico Diagnostico { get; set; } // Diagnostico
-    public float Similaridade { get; set; } // Grau de Certeza
+    public float Similaridade { get; set; } // Grau de Similaridade
 }

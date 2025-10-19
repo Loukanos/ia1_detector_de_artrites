@@ -394,8 +394,7 @@ internal class Program
         string linhaCaso = string.Join(" | ", Array.ConvertAll(propriedadesCaso, p => $"{p.Name}:{p.GetValue(novoCaso)}"));
         Console.WriteLine(linhaCaso);
 
-        Console.WriteLine("\n\nCasos similares:");
-        
+        Console.WriteLine("\nCasos similares:");
         casos = casos.OrderBy(c => c.Similaridade).ToList();
 
         // Adicionando novo Caso
