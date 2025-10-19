@@ -177,29 +177,6 @@ internal class Program
                     nrValue = 0;
                 }
 
-                // Testando os valores de entrada
-                /*
-                Console.WriteLine($"Valor: '{campos[0]}'");
-                Console.WriteLine($"Valor: '{campos[1]}'");
-                Console.WriteLine($"Valor: '{campos[2]}'");
-                Console.WriteLine($"Valor: '{campos[3]}'");
-                Console.WriteLine($"Valor: '{campos[4]}'");
-                Console.WriteLine($"Valor: '{campos[5]}'");
-                Console.WriteLine($"Valor: '{campos[6]}'");
-                Console.WriteLine($"Valor: '{campos[7]}'");
-                Console.WriteLine($"Valor: '{campos[8]}'");
-                Console.WriteLine($"Valor: '{campos[9]}'");
-                Console.WriteLine($"Valor: '{campos[10]}'");
-                Console.WriteLine($"Valor: '{campos[11]}'");
-                Console.WriteLine($"Valor: '{campos[12]}'");
-                Console.WriteLine($"Valor: '{campos[13]}'");
-                Console.WriteLine($"Valor: '{campos[14]}'");
-                Console.WriteLine($"Valor: '{campos[15]}'");
-                Console.WriteLine($"Valor: '{campos[16]}'");
-                Console.WriteLine($"Valor: '{campos[17]}'");
-                Console.WriteLine($"Valor: '{campos[18]}'");
-                */
-
                 var caso = new Caso
                 {
                     Id = int.Parse(campos[0]),
@@ -230,14 +207,6 @@ internal class Program
         {
             Console.WriteLine("Arquivo não encontrado.");
         }
-
-        // testar os valores dos casos
-        /*
-        foreach (var caso in casos)
-        {
-            Console.WriteLine($"Id: {caso.Id}, nr: {caso.NR}, Diagnóstico: {caso.Diagnostico}");
-        }
-        //*/
 
         Console.WriteLine("\n         Diagnostico de Artrite\n");
 
@@ -293,7 +262,6 @@ internal class Program
         ConfigurarPesos(pesos);
 
         // Algoritmo da Vizinhança
-        float atributo = 0;
         float somaAtributos = 0;
         float resultado = 0;
         float somaPesos = pesos.DTS + pesos.DJ + pesos.DC + pesos.ER + pesos.IL +
@@ -323,7 +291,6 @@ internal class Program
             pesos.DL /= somaPesos;
         }
 
-        
         for (int i = 0; i < casos.Count; i++)
         {
             somaAtributos = 0;
@@ -395,7 +362,6 @@ internal class Program
             Console.WriteLine(linhaCasos);
         }
 
-        
         // Adicionando novo Caso
         Console.WriteLine("\nVai querer adicionar esses novo caso no banco de dados? (s/n):");
         string salvarInput = Console.ReadLine()?.Trim().ToLower();
@@ -447,8 +413,5 @@ internal class Program
         {
             Console.WriteLine("\nNovo caso não foi adicionado.");
         }
-        
-
-
     }
 }
