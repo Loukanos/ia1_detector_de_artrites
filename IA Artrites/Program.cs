@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 using IA_Artrites;
 using IA_Artrites.Enumerations;
 
@@ -10,6 +11,21 @@ internal class Program
 {
     // Troca o valor de sim/nao do txt para true e flase
     static bool ParseBool(string valor) => valor.Trim().ToLower() == "sim";
+
+    // Localiza arquivo de casos no diretório do projeto por nomes possíveis
+    static string ObterCaminhoArquivoCasos()
+    {
+        string[] nomesPossiveis = { "CasosArtrites.txt", "CasosArtrites - Organizado.txt" };
+        string baseDir = AppContext.BaseDirectory; // bin/Debug/net8.0
+        string projetoDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", ".."));
+        foreach (var nome in nomesPossiveis)
+        {
+            string caminho = Path.Combine(projetoDir, nome);
+            if (File.Exists(caminho)) return caminho;
+        }
+        // fallback: primeiro nome
+        return Path.Combine(projetoDir, nomesPossiveis[0]);
+    }
 
     // Fazer o usuario escolher valor atributo
     static bool ReadBoolPromptNumero(string prompt)
@@ -20,13 +36,13 @@ internal class Program
 
         while (true)
         {
-            Console.Write("> Escolha um número: ");
+            Console.Write("  > Escolha um número: ");
             string input = Console.ReadLine()?.Trim();
 
             if (input == "1") return true;
             if (input == "2") return false;
 
-            Console.WriteLine(" Opção inválida. Digite 1 para 'Sim' ou 2 para 'Não'.\n");
+            Console.WriteLine("    Opção inválida. Digite 1 para 'Sim' ou 2 para 'Não'.\n");
         }
     }
 
@@ -46,7 +62,7 @@ internal class Program
 
         while (true)
         {
-            Console.Write("> Escolha um número: ");
+            Console.Write("  > Escolha um número: ");
             string input = Console.ReadLine()?.Trim();
 
             if (int.TryParse(input, out int escolha) &&
@@ -55,7 +71,7 @@ internal class Program
                 return (T)values.GetValue(escolha - 1);
             }
 
-            Console.WriteLine("Opção inválida. Digite o número de uma das opções acima.\n");
+            Console.WriteLine("    Opção inválida. Digite um dos números acima.\n");
         }
     }
 
@@ -65,24 +81,20 @@ internal class Program
         bool continuar = true;
         while (continuar)
         {
-            Console.WriteLine("\nPesos dos atributos: ");
-            PropertyInfo[] propriedades = typeof(Pesos).GetProperties();
-
-            for (int i = 0; i < propriedades.Length; i++)
-            {
-                Console.WriteLine($"[{i + 1}] {propriedades[i].Name}: {propriedades[i].GetValue(pesos)}");
-            }
-
-            Console.Write("\nDeseja alterar algum peso? (s/n): ");
+            Console.WriteLine("\nPesos atuais:");
+            var props = typeof(Pesos).GetProperties();
+            for (int i = 0; i < props.Length; i++)
+                Console.WriteLine($"  [{i + 1}] {props[i].Name,-10}: {props[i].GetValue(pesos),6:F3}");
+            Console.Write("\nAlterar algum peso? (s/n): ");
             string input = Console.ReadLine()?.Trim().ToLower();
 
             if (input == "s")
             {
                 Console.Write("Digite o número do atributo que deseja alterar: ");
                 if (int.TryParse(Console.ReadLine(), out int numero) &&
-                    numero >= 1 && numero <= propriedades.Length)
+                    numero >= 1 && numero <= props.Length)
                 {
-                    var prop = propriedades[numero - 1];
+                    var prop = props[numero - 1];
 
                     Console.Write($"Digite o novo valor para {prop.Name}: ");
                     if (float.TryParse(Console.ReadLine(), out float novoValor))
@@ -158,10 +170,47 @@ internal class Program
         return sim;
     }
 
+    // ===== NOVAS FUNÇÕES DE SAÍDA DOS RESULTADOS =====
+    static string FBool(bool b) => b ? "Sim" : "Não";
+    static string FEnum(Enum e) => e.ToString().Replace("_", " ");
+    static void ImprimirResultados(Caso novoCaso, List<Caso> casos, Pesos pesos, string caminhoArquivo)
+    {
+        Console.WriteLine("\n==============================================");
+        Console.WriteLine("              RESULTADOS DO DIAGNÓSTICO       ");
+        Console.WriteLine("==============================================\n");
+
+        Console.WriteLine($"Diagnóstico previsto para o novo caso: {novoCaso.Diagnostico}\n");
+
+        Console.WriteLine("Pesos normalizados (ordenados):");
+        Console.WriteLine(" Atributo        Peso");
+        Console.WriteLine(" ----------------------");
+        foreach (var p in typeof(Pesos).GetProperties().OrderByDescending(x => (float)x.GetValue(pesos)!))
+            Console.WriteLine($" {p.Name,-12} {(float)p.GetValue(pesos)!,7:F4}");
+
+        Console.WriteLine("\nNovo Caso (atributos):");
+        Console.WriteLine(" --------------------------------------------------------------");
+        Console.WriteLine($" DL:{FBool(novoCaso.DL),3}  RC:{FBool(novoCaso.RC),3}  DC:{FBool(novoCaso.DC),3}  Mob:{FEnum(novoCaso.Mob)}");
+        Console.WriteLine($" DTS:{FBool(novoCaso.DTS),3} IL:{FEnum(novoCaso.IL)} ER:{FEnum(novoCaso.ER)} TCSE:{FEnum(novoCaso.TCSE)}");
+        Console.WriteLine($" ART:{FBool(novoCaso.ART),3} RM:{FBool(novoCaso.RM),3} BUR:{FBool(novoCaso.BUR),3} TOF:{FBool(novoCaso.TOF),3}");
+        Console.WriteLine($" SIN:{FBool(novoCaso.SIN),3} ATG:{FBool(novoCaso.ATG),3} NR:{novoCaso.NR:F2} HLAB27:{FBool(novoCaso.HLAB27),3} DJ:{FBool(novoCaso.DJ),3}");
+
+        Console.WriteLine("\nTop 10 casos similares:");
+        Console.WriteLine(" Id  Similaridade  Diagnóstico");
+        Console.WriteLine(" ----------------------------------------");
+        foreach (var c in casos.Take(10))
+            Console.WriteLine($" {c.Id,-3} {c.Similaridade,10:F2}%  {c.Diagnostico}");
+
+        Console.WriteLine($"\nArquivo utilizado: {caminhoArquivo}");
+    }
+
     public static void Main(string[] args)
     {
         var casos = new List<Caso>();
-        string caminhoArquivo = "C:\\Users\\leo_a\\Downloads\\Ia Trab M2\\IA Artrites\\CasosArtrites.txt";
+
+        //string caminhoArquivo2 = "C:\\Users\\leo_a\\Downloads\\Ia Trab M2\\IA Artrites\\CasosArtrites.txt";
+        //string caminhoArquivo = Path.Combine(AppContext.BaseDirectory, "CasosArtrites.txt");
+        // Caminho dinâmico
+        string caminhoArquivo = ObterCaminhoArquivoCasos();
         int id = 0;
 
         if (File.Exists(caminhoArquivo))
@@ -170,12 +219,13 @@ internal class Program
             {
                 var campos = linha.Split(';');
                 id++;
-
-                float nrValue;
-                if (!float.TryParse(campos[16].Trim(), NumberStyles.Float, new CultureInfo("pt-BR"), out nrValue))
-                {
-                    nrValue = 0;
-                }
+                //float nrValue;
+                //if (!float.TryParse(campos[16].Trim(), NumberStyles.Float, new CultureInfo("pt-BR"), out nrValue))
+                //{
+                //    nrValue = 0;
+                //}
+                float nrValue; // NR está no índice 15
+                if (!float.TryParse(campos[15].Trim(), NumberStyles.Float, new CultureInfo("pt-BR"), out nrValue)) nrValue = 0f;
 
                 var caso = new Caso
                 {
@@ -205,7 +255,7 @@ internal class Program
         }
         else
         {
-            Console.WriteLine("Arquivo não encontrado.");
+            Console.WriteLine($"Arquivo não encontrado: {caminhoArquivo}");
         }
 
         Console.WriteLine("\n         Diagnostico de Artrite\n");
@@ -264,7 +314,7 @@ internal class Program
         // Algoritmo da Vizinhança
         float somaAtributos = 0;
         float resultado = 0;
-        float somaPesos = pesos.DTS + pesos.DJ + pesos.DC + pesos.ER + pesos.IL +
+    float somaPesos = pesos.DTS + pesos.DJ + pesos.DC + pesos.ER + pesos.IL +
                               pesos.Mob + pesos.RC + pesos.RM + pesos.NR + pesos.TCSE +
                               pesos.ART + pesos.BUR + pesos.TOF + pesos.SIN + pesos.ATG +
                               pesos.HLAB27 + pesos.DL;
@@ -296,7 +346,7 @@ internal class Program
             somaAtributos = 0;
             resultado = 0;
 
-            // DL
+        // DL
             somaAtributos += pesos.DL * Similaridade(BoolToFloat(novoCaso.DL), BoolToFloat(casos[i].DL));
             // RC
             somaAtributos += pesos.RC * Similaridade(BoolToFloat(novoCaso.RC), BoolToFloat(casos[i].RC));
@@ -334,33 +384,23 @@ internal class Program
             // Resultado final (em %)
             resultado = somaAtributos * 100f;
             casos[i].Similaridade = resultado;
-        }
+    }
 
         // Mostrar Resultado
         casos = casos.OrderByDescending(c => c.Similaridade).ToList();
+        if (casos.Count > 0)
         novoCaso.Diagnostico = casos[0].Diagnostico;
 
-        Console.WriteLine("\n\n   Resultado do Diagnóstico\n");
-        Console.WriteLine("Pesos dos Casos:");
-        PropertyInfo[] propriedades = typeof(IA_Artrites.Pesos).GetProperties();
-        string linhaPesos = string.Join(" | ", Array.ConvertAll(propriedades, p => $"{p.Name}:{p.GetValue(pesos)}"));
-        Console.WriteLine(linhaPesos);
+        // ===== NOVA SAÍDA MELHORADA =====
+        ImprimirResultados(novoCaso, casos, pesos, caminhoArquivo);
 
-        Console.WriteLine("\nNovo Caso:");
-        PropertyInfo[] propriedadesCaso = typeof(Caso).GetProperties();
-        string linhaCaso = string.Join(" | ",
-            propriedadesCaso
-                .Where(p => p.Name != "Similaridade")
-                .Select(p => $"{p.Name}:{p.GetValue(novoCaso)}"));
-        Console.WriteLine(linhaCaso);
-        
-        Console.WriteLine("\nCasos similares:");
-        for (int i = 0; i < casos.Count; i++)
-        {
-            PropertyInfo[] propriedadesCasos = typeof(Caso).GetProperties();
-            string linhaCasos = string.Join(" | ", Array.ConvertAll(propriedadesCasos, p => $"{p.Name}:{p.GetValue(casos[i])}"));
-            Console.WriteLine(linhaCasos);
-        }
+        //Console.WriteLine("\nCasos similares:");
+        //for (int i = 0; i < casos.Count; i++)
+        //{
+        //    PropertyInfo[] propriedadesCasos = typeof(Caso).GetProperties();
+        //    string linhaCasos = string.Join(" | ", Array.ConvertAll(propriedadesCasos, p => $"{p.Name}:{p.GetValue(casos[i])}"));
+        //    Console.WriteLine(linhaCasos);
+        //}
 
         // Adicionando novo Caso
         Console.WriteLine("\nVai querer adicionar esses novo caso no banco de dados? (s/n):");
